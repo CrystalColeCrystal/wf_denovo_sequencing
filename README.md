@@ -1,4 +1,4 @@
-# wf_denovo_sequencing
+# Casanovo meets Peptide-PRISM
 
 ---
 A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [Casanovo](https://github.com/Noble-Lab/casanovo) and subsequent annotation of the peptides to the reference genome with [Peptide-PRISM](https://pubmed.ncbi.nlm.nih.gov/32561536/)
