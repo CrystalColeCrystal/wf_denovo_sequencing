@@ -11,7 +11,7 @@ A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [C
    conda activate snakemake_env
    conda install bioconda::snakemake
    ```
-2. Install singularity according to the tutorial here: https://docs.sylabs.io/guides/3.0/user-guide/installation.html
+2. Install singularity according to the tutorial [here](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
 3. Clone the repository:
    ```bash
    git clone https://github.com/CrystalColeCrystal/wf_denovo_sequencing.git
