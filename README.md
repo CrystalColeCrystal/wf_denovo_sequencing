@@ -43,7 +43,7 @@ A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [C
    ```
 7. Index the genome:
    ```bash
-   singularity run workflow/containers/image/peptide.prism.1.1.0.ubuntu.env.def
+   singularity run workflow/containers/image/peptide.prism.1.1.0.ubuntu.env.sif
    java -jar workflow/shell/Peptide-PRISM/IndexGenome.jar -s genomes/GRCh38.p14/GRCh38.p14.genome.fa -a genomes/GRCh38.p14/gencode.v47.annotation.gtf -nomapping -o genomes/GRCh38.p14/GRCh38.p14
    exit
    ```
@@ -57,8 +57,9 @@ A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [C
 9. Modify workflow/profiles/example/config.yaml and workflow/profiles/example/todo.py according to the instructions in them.
 10. Run:
     ```bash
-    conda activate snakemake_env
     snakemake --profile workflow/profiles/example
     ```
+
+If you have Casanovo and Peptide-PRISM already installed and you don't want to use Snakemake and Singularity you can simply download workflow/shell/format_conversion_for_PRISM.py and apply it to your Casanovo output. This just an adaptor script to convert the file to the [PEAKS](https://pubmed.ncbi.nlm.nih.gov/14558135/)-like format.
    
 
