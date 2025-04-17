@@ -1,0 +1,111 @@
+assert "MAX_RAM_MB" in config, "'MAX_RAM_MB' not in config"
+assert "MAX_THREADS" in config, "'MAX_THREADS' not in config"
+assert "MAX_VRAM_MB" in config, "'MAX_VRAM_MB' not in config"
+MAX_RAM_MB = config["MAX_RAM_MB"]
+MAX_THREADS = config["MAX_THREADS"]
+MAX_VRAM_MB = config["MAX_VRAM_MB"]
+
+SEQS = []
+
+class DenovoSequencing():
+    def __init__(self, 
+                project, #name of your project
+                MS_data, #path to the folder with MS data (.mzML)
+                genome, #name of your genome that you generated with IndexGenome.jar
+                model='casanovo_nontryptic.ckpt', #name of your Casanovo model file
+                extra=None, #Fasta file containing extra sequences (DNA will be 6-frame translated!)!
+                rnaseq=None, #Fasta file containing extra transcript sequences (will be 3-frame translated!)!
+                var=None #File containing variants (each line); could also be in ${input%.csv}.var, in which case you do not have to specify this parameter!
+                ):
+        self.project = project 
+        self.MS_data = MS_data 
+        self.genome = genome 
+        self.model = model
+        self.extra = extra 
+        self.rnaseq = rnaseq 
+        self.var = var 
+
+if "todo" in config:
+    include: f"profiles/{config['todo']}/todo.py"
+
+def get_dataset(project):
+    for dataset in SEQS:
+        if dataset.project == project:
+            return dataset
+    raise ValueError(f"Dataset {project} not found")
+
+rule all:
+    input:
+        casanovo_mztab = [f"_data/casanovo/{seq.project}/{seq.project}.mztab" for seq in SEQS],
+        csv = [f"_data/prism/{seq.project}/{seq.project}_toprism.csv" for seq in SEQS],
+        prism = [f"_data/prism/{seq.project}/{seq.project}_toprism.csv.pep.annotated.csv.gz" for seq in SEQS]
+
+
+rule run_Casanovo:
+    input:
+        MS_data = lambda wildcards: get_dataset(wildcards.project).MS_data
+    output:
+        mztab = "_data/casanovo/{project}/{project}.mztab"
+    singularity:
+        "workflow/containers/image/python.3.10.15.gpu.ubuntu.sif"
+    params:
+        model = lambda wildcards: get_dataset(wildcards.project).model,
+    resources:
+        vram=MAX_VRAM_MB
+    shell:
+        '''
+        casanovo sequence -o {output.mztab} -m model/{params.model} -c model/config.yaml -v info {input.MS_data}/*.mzML
+        '''
+
+
+rule convert_format:
+    input:
+        mztab = "_data/casanovo/{project}/{project}.mztab"
+    output:
+        csv = "_data/prism/{project}/{project}_toprism.csv"
+    singularity:
+        "workflow/containers/image/python.3.12.2.debian.sif"
+    resources:
+        threads=1
+    shell:
+        '''
+        python workflow/shell/format_conversion_for_PRISM.py --input_mztab {input.mztab} --output_csv {output.csv}
+        '''
+
+rule run_Peptide_PRISM:
+    input:
+        csv = "_data/prism/{project}/{project}_toprism.csv"
+    output:
+        annotated = "_data/prism/{project}/{project}_toprism.csv.pep.annotated.csv.gz"
+    singularity:
+        "workflow/containers/image/peptide.prism.1.1.0.ubuntu.env.sif"
+    params:
+        genome = lambda wildcards: get_dataset(wildcards.project).genome,
+        extra_flags = lambda wildcards: " ".join(filter(None, [
+            "-rnaseq {}".format(get_dataset(wildcards.project).rnaseq) if get_dataset(wildcards.project).rnaseq else None,
+            "-var {}".format(get_dataset(wildcards.project).var) if get_dataset(wildcards.project).var else None,
+            "-extra {}".format(get_dataset(wildcards.project).extra) if get_dataset(wildcards.project).extra else None
+        ]))
+    resources:
+        threads=MAX_THREADS,
+        mem_mb=MAX_RAM_MB
+    shell:
+        '''
+        java -jar workflow/shell/Peptide-PRISM/Prism.jar -in {input.csv} -g genomes/{params.genome}/{params.genome} -progress -D {params.extra_flags}
+        '''
+
+
+#rule postprocessing:
+
+
+
+# rule have_fun:
+#               __________ 
+#              |          |
+#              | ~@**#~~  |
+#        ,,,   |  ________|
+#      (O___0) \/  
+#   \    | |    /
+#    \ \     \ /
+#      /     /
+#      |     |

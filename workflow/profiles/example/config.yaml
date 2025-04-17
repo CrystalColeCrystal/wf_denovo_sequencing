@@ -1,0 +1,20 @@
+rerun-incomplete: True
+printshellcmds: True
+benchmark-extended: True
+
+core: <number of threads>
+resources:
+  - mem_mb=<RAM size in mb>
+  - vram=<VRAM size in mb>
+
+# REPRODUCIBILITY
+use-apptainer: True
+singularity-args: "--bind <put here path to the parent directory of the raw data that you specify in todo.py> --nv"
+
+# CONFIG
+config:
+  MAX_RAM_MB: <RAM size in mb>
+  MAX_THREADS: <number of threads>
+  MAX_VRAM_MB: <VRAM size in mb>
+  PRISM: "workflow/shell/Peptide-PRISM"
+  todo: example

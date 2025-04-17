@@ -1,0 +1,11 @@
+Bootstrap: docker
+From: python:3.12.2
+
+%post
+    # # Install Python dependencies
+    pip3 install --no-cache-dir \
+        pandas==2.2.2 \
+
+
+%test
+    python --version
