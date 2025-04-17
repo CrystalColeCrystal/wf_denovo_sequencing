@@ -1,9 +1,11 @@
 # wf_denovo_sequencing
 
-A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [Casanovo](https://github.com/Noble-Lab/casanovo) and subsequent annotation of the peptides to the reference genome with [Peptide-PRISM](https://pubmed.ncbi.nlm.nih.gov/32561536/)
-
 ---
+A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [Casanovo](https://github.com/Noble-Lab/casanovo) and subsequent annotation of the peptides to the reference genome with [Peptide-PRISM](https://pubmed.ncbi.nlm.nih.gov/32561536/)
+---
+
 If you have Casanovo and Peptide-PRISM already installed and you don't want to use Snakemake and Singularity you can simply download workflow/shell/format_conversion_for_PRISM.py and apply it to your Casanovo output. This just an adaptor script to convert the file to the [PEAKS](https://pubmed.ncbi.nlm.nih.gov/14558135/)-like format.
+
 ---
 
 ## 🛠️ Installation
