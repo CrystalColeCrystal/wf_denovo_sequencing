@@ -11,13 +11,13 @@ A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [C
    conda activate snakemake_env
    conda install bioconda::snakemake
    ```
-2. Install singularity according to the tutorial [here](https://docs.sylabs.io/guides/3.0/user-guide/installation.html)
+2. Install singularity according to the tutorial [here](https://docs.sylabs.io/guides/3.0/user-guide/installation.html).
 3. Clone the repository:
    ```bash
    git clone https://github.com/CrystalColeCrystal/wf_denovo_sequencing.git
    cd wf_denovo_sequencing
    ```
-4. Build the images
+4. Build the images:
    ```bash
    cd workflow/containers
    sudo sungularity build image/python.3.12.2.debian.sif def/python.3.12.2.debian.def
@@ -25,7 +25,7 @@ A Snakemake-based workflow for de novo sequencing of MS peptidomics data with [C
    sudo sungularity build image/peptide.prism.1.1.0.ubuntu.env.sif def/peptide.prism.1.1.0.ubuntu.env.def
    cd ../../
    ```
-   The python.3.10.15.gpu.ubuntu.sif image for Casanovo execution is built with cuda:12.4.0. This may need to be adjusted depending on your GPU
+   The python.3.10.15.gpu.ubuntu.sif image for Casanovo execution is built with cuda:12.4.0. This may need to be adjusted depending on your GPU.
 5. Download Peptide-PRISM from [here](https://www.uni-wuerzburg.de/sft/erfindungen-patente-und-lizenzen-jmu-und-ukw/download-software-for-scientific-purposes/). Extract the Peptide-PRISM.zip to your workflow/shell folder:
    ```bash
    unzip ~/Downloads/Peptide-PRISM.zip -d workflow/shell/
